@@ -1,0 +1,1 @@
+Určte ako vplýva transformácia vstupných obrázkov snímaných objektívom rybie oko na pravouhlý formát na úspešnosť odhadu slnečného žiarenia z fotiek oblohy. Experimenty vykonajte na zvolených pred-trénovaných sieťach pre spracovanie obrazu a vhodné rozmery originálnych vstupných fotiek oblohy, ktoré dosahujú najlepšie chybovosti odhadu.
