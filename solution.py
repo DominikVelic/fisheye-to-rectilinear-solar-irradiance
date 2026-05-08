@@ -46,11 +46,23 @@ NUM_WORKERS = min(4, os.cpu_count() or 1)
 # Irradiance normalisation constant (slightly above train max ≈1440 W/m²)
 IRRADIANCE_SCALE = 1500.0
 
+# Per-channel mean and std of ImageNet (RGB order).
+# Pre-trained backbones expect inputs normalised with these exact statistics
+# because that is what was used during their original training.
+IMAGENET_MEAN = [0.485, 0.456, 0.406]
+IMAGENET_STD = [0.229, 0.224, 0.225]
+
 # Experiment grid
 IMAGE_SIZES = [224, 256, 320]
 IMAGE_TYPES = ["original", "rectangular"]
 # MODEL_NAMES = ["resnet18", "resnet50", "mobilenet_v3_small", "efficientnet_b0"]
-MODEL_NAMES = ["resnet18", "resnet50"]
+
+# Models
+RESNET18 = "resnet18"
+RESNET50 = "resnet50"
+MOBILENET_V3_SMALL = "mobilenet_v3_small"
+EFFICIENT_B0 = "efficientnet_b0"
+MODEL_NAMES = [RESNET18, RESNET50, MOBILENET_V3_SMALL, EFFICIENT_B0]
 
 # Training hyper-parameters
 BATCH_SIZE = 16    # reduced to fit in ~6 GiB VRAM
@@ -133,7 +145,7 @@ class SkyDataset(Dataset):
         self.transform = T.Compose([
             T.Resize((img_size, img_size)),
             T.ToTensor(),
-            T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            T.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
         ])
 
     def __len__(self) -> int:
@@ -167,17 +179,17 @@ def make_loaders(
 
 def build_model(arch: str) -> nn.Module:
     """Load a pre-trained backbone and replace its head with a single regression output."""
-    if arch == "resnet18":
+    if arch == RESNET18:
         m = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
         m.fc = nn.Linear(m.fc.in_features, 1)
-    elif arch == "resnet50":
+    elif arch == RESNET50:
         m = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
         m.fc = nn.Linear(m.fc.in_features, 1)
-    elif arch == "mobilenet_v3_small":
+    elif arch == MOBILENET_V3_SMALL:
         m = models.mobilenet_v3_small(
             weights=models.MobileNet_V3_Small_Weights.DEFAULT)
         m.classifier[-1] = nn.Linear(m.classifier[-1].in_features, 1)
-    elif arch == "efficientnet_b0":
+    elif arch == EFFICIENT_B0:
         m = models.efficientnet_b0(
             weights=models.EfficientNet_B0_Weights.DEFAULT)
         m.classifier[-1] = nn.Linear(m.classifier[-1].in_features, 1)
