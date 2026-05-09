@@ -49,6 +49,7 @@ NUM_WORKERS = min(4, os.cpu_count() or 1)
 
 SEED = 42
 
+
 def set_seed(seed: int = SEED):
     random.seed(seed)
     np.random.seed(seed)
@@ -72,17 +73,18 @@ IMAGENET_STD = [0.229, 0.224, 0.225]
 # Experiment grid
 IMAGE_SIZES = [224, 256, 320]
 IMAGE_TYPES = ["original", "rectangular"]
-# MODEL_NAMES = ["resnet18", "resnet50", "mobilenet_v3_small", "efficientnet_b0"]
 
 # Models
 RESNET18 = "resnet18"
 RESNET50 = "resnet50"
 MOBILENET_V3_SMALL = "mobilenet_v3_small"
 EFFICIENT_B0 = "efficientnet_b0"
-MODEL_NAMES = [RESNET18, RESNET50, MOBILENET_V3_SMALL, EFFICIENT_B0]
+# MODEL_NAMES = [RESNET18, RESNET50, MOBILENET_V3_SMALL, EFFICIENT_B0]
+MODEL_NAMES = [RESNET50]
 
 # Training hyper-parameters
 BATCH_SIZE = 16    # reduced to fit in ~6 GiB VRAM
+NUM_EPOCHS = 50
 GRAD_ACCUM_STEPS = 2     # effective batch = BATCH_SIZE × GRAD_ACCUM_STEPS = 32
 LR = 1e-4
 WEIGHT_DECAY = 1e-4
@@ -288,7 +290,6 @@ def run_experiment(
     num_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Trainable parameters: {num_params:,}")
 
-
     best_val_rmse = float("inf")
     best_state = None
     history = []
@@ -324,7 +325,6 @@ def run_experiment(
     CHECKPOINT_DIR.mkdir(exist_ok=True)
     checkpoint_path = CHECKPOINT_DIR / f"{arch}_{img_type}_{img_size}.pth"
     torch.save(best_state, checkpoint_path)
-
 
     model.load_state_dict(best_state)
     test_m = evaluate(model, test_loader)
@@ -475,13 +475,15 @@ def print_summary(results: list[dict]) -> None:
         print(pivot[["original", "rectangular", "delta"]].to_string(
             float_format=lambda x: f"{x:.3f}"))
 
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description="")
     parser.add_argument("--quick", action="store_true",
                         help="Quick run: 3 epochs, 2000 training samples per config")
-    parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument("--epochs", type=int, default=NUM_EPOCHS)
     parser.add_argument("--models", nargs="+", default=MODEL_NAMES,
                         choices=MODEL_NAMES, help="Subset of models to run")
+    parser.add_argument("--patience", type=int, default=PATIENCE)
     parser.add_argument("--sizes", nargs="+", type=int, default=None)
     parser.add_argument("--types", nargs="+", default=None,
                         choices=IMAGE_TYPES)
@@ -498,9 +500,11 @@ def main() -> None:
     arch_list = args.models or MODEL_NAMES
     size_list = args.sizes or IMAGE_SIZES
     type_list = args.types or IMAGE_TYPES
+    patience = args.patience
 
     print(f"Device:       {DEVICE}")
     print(f"Epochs:       {num_epochs}")
+    print(f"Patience:     {patience}")
     print(f"Train subset: {subset_train or 'all'}")
     print(f"Models:       {arch_list}")
     print(f"Sizes:        {size_list}")
