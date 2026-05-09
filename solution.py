@@ -40,6 +40,7 @@ matplotlib.use("Agg")
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 DATA_DIR = Path("./data")
+DATA_RECTANGULAR = Path("./data_rectangular")
 RESULTS_DIR = Path("./results")
 RESULTS_DIR.mkdir(exist_ok=True)
 
@@ -143,8 +144,10 @@ class SkyDataset(Dataset):
         img_size: int,
         subset: int | None = None,
     ):
-        self.img_dir = DATA_DIR / split / "images"
-        self.image_type = image_type
+        if image_type == "rectangular":
+            self.img_dir = DATA_RECTANGULAR / split / "images"
+        else:
+            self.img_dir = DATA_DIR / split / "images"
 
         df = pd.read_csv(DATA_DIR / split / "meteo_data_cleaned.csv")
         df = df[df["PictureName"].apply(lambda n: (self.img_dir / n).exists())]
@@ -171,10 +174,6 @@ class SkyDataset(Dataset):
     def __getitem__(self, idx: int):
         path = self.img_dir / self.names[idx]
         img = cv2.cvtColor(cv2.imread(str(path)), cv2.COLOR_BGR2RGB)
-
-        if self.image_type == "rectangular":
-            img = fisheye_to_rectangular(img)
-
         return self.transform(Image.fromarray(img)), self.labels[idx]
 
 
