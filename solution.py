@@ -16,8 +16,6 @@ import time
 from pathlib import Path
 
 import cv2
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import torch
@@ -29,11 +27,9 @@ from PIL import Image
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
-import random
-import copy
 import json
-
-matplotlib.use("Agg")
+import random
+import datetime
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 
@@ -42,11 +38,15 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 DATA_DIR = Path("./data")
 DATA_RECTANGULAR = Path("./data_rectangular")
 RESULTS_DIR = Path("./results")
-RESULTS_DIR.mkdir(exist_ok=True)
+CHECKPOINT_DIR = RESULTS_DIR / "checkpoints"
+HISTORY_DIR = RESULTS_DIR / "history"
+PREDICTIONS_DIR = RESULTS_DIR / "predictions"
+
+for _d in (RESULTS_DIR, CHECKPOINT_DIR, HISTORY_DIR, PREDICTIONS_DIR):
+    _d.mkdir(exist_ok=True)
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 NUM_WORKERS = min(4, os.cpu_count() or 1)
-
 
 SEED = 42
 
@@ -80,8 +80,7 @@ RESNET18 = "resnet18"
 RESNET50 = "resnet50"
 MOBILENET_V3_SMALL = "mobilenet_v3_small"
 EFFICIENT_B0 = "efficientnet_b0"
-# MODEL_NAMES = [RESNET18, RESNET50, MOBILENET_V3_SMALL, EFFICIENT_B0]
-MODEL_NAMES = [RESNET50]
+MODEL_NAMES = [RESNET18, RESNET50, MOBILENET_V3_SMALL, EFFICIENT_B0]
 
 # Training hyper-parameters
 BATCH_SIZE = 16    # reduced to fit in ~6 GiB VRAM
@@ -93,50 +92,8 @@ PATIENCE = 5
 
 USE_AMP = DEVICE.type == "cuda"   # automatic mixed precision halves VRAM usage
 
-
-# ── Fisheye → Equirectangular transformation ───────────────────────────────────
-
-def fisheye_to_rectangular(img_rgb: np.ndarray) -> np.ndarray:
-    """
-    Convert an equidistant fisheye sky image to an equirectangular projection.
-
-    The fisheye lens maps the full hemisphere (zenith at centre, horizon at
-    circle edge) using the equidistant model:  r = R · θ / (π/2)
-
-    The equirectangular output maps:
-        x-axis  →  azimuth   φ ∈ [0, 2π)
-        y-axis  →  zenith    θ ∈ [0, π/2]   (top = zenith, bottom = horizon)
-
-    Output shape: (H//2, W) where H, W are the input dimensions.
-    """
-    h, w = img_rgb.shape[:2]
-    cx = w / 2.0
-    cy = h / 2.0
-    R = min(cx, cy)          # radius of the fisheye circle in pixels
-
-    out_h = h // 2
-    out_w = w
-
-    # Vectorised coordinate mapping
-    out_y, out_x = np.mgrid[0:out_h, 0:out_w].astype(np.float32)
-
-    phi = 2.0 * np.pi * out_x / out_w      # azimuth  0 … 2π
-    theta = (np.pi / 2.0) * out_y / out_h    # zenith   0 … π/2
-
-    r = R * theta / (np.pi / 2.0)        # equidistant: r = R·θ/(π/2)
-
-    src_x = (cx + r * np.cos(phi)).astype(np.float32)
-    src_y = (cy + r * np.sin(phi)).astype(np.float32)
-
-    return cv2.remap(
-        img_rgb, src_x, src_y,
-        interpolation=cv2.INTER_LINEAR,
-        borderMode=cv2.BORDER_CONSTANT,
-        borderValue=0,
-    )
-
-
 # ── Dataset ────────────────────────────────────────────────────────────────────
+
 
 class SkyDataset(Dataset):
     def __init__(
@@ -228,7 +185,7 @@ def train_epoch(
     model.train()
     total = 0.0
     opt.zero_grad()
-    for step, (imgs, labels) in enumerate(loader):
+    for step, (imgs, labels) in enumerate(tqdm(loader, desc="train", leave=False)):
         imgs, labels = imgs.to(DEVICE), labels.to(DEVICE).unsqueeze(1)
         with torch.autocast(device_type=DEVICE.type, enabled=USE_AMP):
             loss = criterion(model(imgs), labels) / GRAD_ACCUM_STEPS
@@ -271,6 +228,8 @@ def run_experiment(
     img_size: int,
     num_epochs: int,
     subset_train: int | None,
+    patience: int,
+    timestamp: str,
 ) -> dict:
     tag = f"{arch}  type={img_type}  size={img_size}×{img_size}"
     print(f"\n{'─'*60}\n{tag}\n{'─'*60}")
@@ -316,13 +275,12 @@ def run_experiment(
         else:
             patience_counter += 1
 
-        if patience_counter >= PATIENCE:
+        if patience_counter >= patience:
             print(f"Early stopping triggered at epoch {epoch}")
             break
 
-    CHECKPOINT_DIR = RESULTS_DIR / "checkpoints"
-    CHECKPOINT_DIR.mkdir(exist_ok=True)
-    checkpoint_path = CHECKPOINT_DIR / f"{arch}_{img_type}_{img_size}.pth"
+    checkpoint_path = CHECKPOINT_DIR / \
+        f"{arch}_{img_type}_{img_size}_{timestamp}.pth"
     torch.save(best_state, checkpoint_path)
 
     model.load_state_dict(best_state)
@@ -330,6 +288,16 @@ def run_experiment(
 
     print(f"\n  TEST  mae={test_m['mae']:.2f}  rmse={
           test_m['rmse']:.2f}  r2={test_m['r2']:.4f}")
+
+    # Saving predictions and history in .npz files after each checkpoint
+    stem = f"{arch}_{img_type}_{img_size}_{timestamp}"
+    with open(HISTORY_DIR / f"{stem}.json", "w") as f:
+        json.dump(history, f)
+    np.savez_compressed(
+        PREDICTIONS_DIR / f"{stem}.npz",
+        preds=test_m["preds"],
+        labels=test_m["labels"],
+    )
 
     # Free GPU memory before next experiment
     del model, optimizer, scaler
@@ -345,107 +313,6 @@ def run_experiment(
         test_labels=test_m["labels"],
         num_params=num_params
     )
-
-
-# ── Plotting ───────────────────────────────────────────────────────────────────
-
-def plot_results(results: list[dict]) -> None:
-    df = pd.DataFrame([{k: v for k, v in r.items()
-                        if k not in ("history", "test_preds", "test_labels")}
-                       for r in results])
-
-    arch_list = df["arch"].unique().tolist()
-    size_list = sorted(df["img_size"].unique())
-
-    # 1. RMSE grouped bar: original vs rectangular, per model, per size
-    fig, axes = plt.subplots(1, len(size_list), figsize=(
-        6 * len(size_list), 5), sharey=True)
-    if len(size_list) == 1:
-        axes = [axes]
-    for ax, sz in zip(axes, size_list):
-        sub = df[df["img_size"] == sz]
-        orig = sub[sub["img_type"] == "original"].set_index("arch")[
-            "test_rmse"]
-        rect = sub[sub["img_type"] == "rectangular"].set_index("arch")[
-            "test_rmse"]
-        x = np.arange(len(arch_list))
-        w = 0.35
-        ax.bar(x - w / 2, [orig.get(a, np.nan) for a in arch_list], w,
-               label="original", color="#4C72B0")
-        ax.bar(x + w / 2, [rect.get(a, np.nan) for a in arch_list], w,
-               label="rectangular", color="#DD8452")
-        ax.set_xticks(x)
-        ax.set_xticklabels(arch_list, rotation=20, ha="right", fontsize=9)
-        ax.set_title(f"Input {sz}×{sz}")
-        ax.set_ylabel("Test RMSE (W/m²)")
-        ax.legend()
-    fig.suptitle(
-        "RMSE comparison: fisheye original vs rectangular", fontsize=12)
-    fig.tight_layout()
-    fig.savefig(RESULTS_DIR / "rmse_comparison.png", dpi=150)
-    plt.close(fig)
-
-    # 2. Heatmap: (arch × img_size) for each image type
-    for img_type in IMAGE_TYPES:
-        sub = df[df["img_type"] == img_type].pivot(
-            index="arch", columns="img_size", values="test_rmse"
-        )
-        if sub.empty:
-            continue
-        fig, ax = plt.subplots(figsize=(5, max(3, len(arch_list))))
-        vmin, vmax = sub.values.min(), sub.values.max()
-        im = ax.imshow(sub.values, aspect="auto",
-                       cmap="YlOrRd", vmin=vmin, vmax=vmax)
-        ax.set_xticks(range(len(sub.columns)))
-        ax.set_xticklabels([f"{c}×{c}" for c in sub.columns])
-        ax.set_yticks(range(len(sub.index)))
-        ax.set_yticklabels(sub.index)
-        ax.set_xlabel("Input size")
-        ax.set_title(f"RMSE (W/m²) — {img_type}")
-        fig.colorbar(im, ax=ax)
-        for i in range(sub.values.shape[0]):
-            for j in range(sub.values.shape[1]):
-                v = sub.values[i, j]
-                if not np.isnan(v):
-                    ax.text(j, i, f"{v:.1f}", ha="center", va="center",
-                            fontsize=9, color="black")
-        fig.tight_layout()
-        fig.savefig(RESULTS_DIR / f"heatmap_{img_type}.png", dpi=150)
-        plt.close(fig)
-
-    # 3. Training curves for the best config
-    best = min(results, key=lambda r: r["test_rmse"])
-    hist = pd.DataFrame(best["history"])
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
-    ax1.plot(hist["epoch"], hist["val_mae"], marker="o")
-    ax1.set_xlabel("Epoch")
-    ax1.set_ylabel("Validation MAE (W/m²)")
-    ax2.plot(hist["epoch"], hist["val_rmse"], marker="o", color="orange")
-    ax2.set_xlabel("Epoch")
-    ax2.set_ylabel("Validation RMSE (W/m²)")
-    title = (f"Best config — {best['arch']} / {best['img_type']} / "
-             f"{best['img_size']}×{best['img_size']}")
-    fig.suptitle(title, fontsize=11)
-    fig.tight_layout()
-    fig.savefig(RESULTS_DIR / "best_training_curve.png", dpi=150)
-    plt.close(fig)
-
-    # 4. Scatter: predicted vs actual for best config
-    preds = best["test_preds"]
-    labels = best["test_labels"]
-    fig, ax = plt.subplots(figsize=(5, 5))
-    ax.scatter(labels, preds, s=2, alpha=0.4)
-    lim = max(labels.max(), preds.max()) * 1.05
-    ax.plot([0, lim], [0, lim], "r--", lw=1)
-    ax.set_xlabel("True Irradiance (W/m²)")
-    ax.set_ylabel("Predicted Irradiance (W/m²)")
-    ax.set_title(f"Best config — RMSE={
-                 best['test_rmse']:.2f}  R²={best['test_r2']:.4f}")
-    fig.tight_layout()
-    fig.savefig(RESULTS_DIR / "best_scatter.png", dpi=150)
-    plt.close(fig)
-
-    print(f"\nPlots saved to {RESULTS_DIR}/")
 
 
 # ── Summary table ──────────────────────────────────────────────────────────────
@@ -475,6 +342,23 @@ def print_summary(results: list[dict]) -> None:
             float_format=lambda x: f"{x:.3f}"))
 
 
+def ensure_rectangular_cache() -> None:
+    """Run rectangular_caching.main() if the pre-converted images are missing."""
+    marker = DATA_RECTANGULAR / "train" / "images"
+    if marker.exists() and any(marker.iterdir()):
+        return
+    print("data_rectangular not found or empty — running rectangular_caching.main() first...")
+    try:
+        from rectangular_caching import main as cache_main
+    except ImportError:
+        raise FileNotFoundError(
+            "rectangular_caching.py not found."
+            "Generate the rectangular images before running rectangular experiments."
+        )
+    cache_main()
+    print("Caching done.\n")
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description="")
     parser.add_argument("--quick", action="store_true",
@@ -494,6 +378,12 @@ def main() -> None:
     args = parse_arguments()
     set_seed()
 
+    if not DATA_DIR.exists():
+        raise FileNotFoundError(
+            f"Data directory '{DATA_DIR}' not found. "
+            "Make sure you are running from the project root and the data is unzipped."
+        )
+
     num_epochs = 3 if args.quick else args.epochs
     subset_train = 2000 if args.quick else None
     arch_list = args.models or MODEL_NAMES
@@ -509,23 +399,32 @@ def main() -> None:
     print(f"Sizes:        {size_list}")
     print(f"Image types:  {type_list}")
 
+    if "rectangular" in type_list:
+        ensure_rectangular_cache()
+
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
     results = []
     for arch in arch_list:
         for img_type in type_list:
             for img_size in size_list:
                 r = run_experiment(arch, img_type, img_size,
-                                   num_epochs, subset_train)
+                                   num_epochs, subset_train, patience, timestamp)
                 results.append(r)
 
     # Save CSV summary
-    summary_rows = [{k: v for k, v in r.items()
-                     if k not in ("history", "test_preds", "test_labels")}
-                    for r in results]
-    pd.DataFrame(summary_rows).to_csv(RESULTS_DIR / "results.csv", index=False)
+    summary_rows = [
+        {k: v for k, v in r.items() if k not in (
+            "history", "test_preds", "test_labels")}
+        for r in results
+    ]
+    for row in summary_rows:
+        row["timestamp"] = timestamp
+    csv_path = RESULTS_DIR / "results.csv"
+    pd.DataFrame(summary_rows).to_csv(csv_path, mode="a",
+                                      header=not csv_path.exists(), index=False)
 
     print_summary(results)
-    plot_results(results)
-
     print(f"\nAll done. Results in {RESULTS_DIR}/")
 
 

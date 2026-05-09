@@ -3,6 +3,7 @@ import cv2
 from tqdm import tqdm
 import numpy as np
 
+
 def fisheye_to_rectangular(img_rgb: np.ndarray) -> np.ndarray:
     """
     Convert an equidistant fisheye sky image to an equirectangular projection.
@@ -81,17 +82,22 @@ INPUT_DIR = Path("./data")
 OUTPUT_DIR = Path("./data_rectangular")
 
 
-for split in ["train", "val", "test"]:
-    in_dir = INPUT_DIR / split / "images"
-    out_dir = OUTPUT_DIR / split / "images"
+def main():
+    for split in ["train", "val", "test"]:
+        in_dir = INPUT_DIR / split / "images"
+        out_dir = OUTPUT_DIR / split / "images"
 
-    out_dir.mkdir(parents=True, exist_ok=True)
+        out_dir.mkdir(parents=True, exist_ok=True)
 
-    for img_path in tqdm(list(in_dir.glob("*.png"))):
-        img = cv2.cvtColor(cv2.imread(str(img_path)), cv2.COLOR_BGR2RGB)
+        for img_path in tqdm(list(in_dir.glob("*.png"))):
+            img = cv2.cvtColor(cv2.imread(str(img_path)), cv2.COLOR_BGR2RGB)
 
-        rect = fisheye_to_rectangular(img)
+            rect = fisheye_to_rectangular(img)
 
-        rect_bgr = cv2.cvtColor(rect, cv2.COLOR_RGB2BGR)
+            rect_bgr = cv2.cvtColor(rect, cv2.COLOR_RGB2BGR)
 
-        cv2.imwrite(str(out_dir / img_path.name), rect_bgr)
+            cv2.imwrite(str(out_dir / img_path.name), rect_bgr)
+
+
+if __name__ == "__main__":
+    main()
