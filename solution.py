@@ -29,6 +29,9 @@ from PIL import Image
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
+import random
+import copy
+import json
 
 matplotlib.use("Agg")
 
@@ -42,6 +45,20 @@ RESULTS_DIR.mkdir(exist_ok=True)
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 NUM_WORKERS = min(4, os.cpu_count() or 1)
+
+
+SEED = 42
+
+def set_seed(seed: int = SEED):
+    random.seed(seed)
+    np.random.seed(seed)
+
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
 
 # Irradiance normalisation constant (slightly above train max ≈1440 W/m²)
 IRRADIANCE_SCALE = 1500.0
@@ -67,9 +84,9 @@ MODEL_NAMES = [RESNET18, RESNET50, MOBILENET_V3_SMALL, EFFICIENT_B0]
 # Training hyper-parameters
 BATCH_SIZE = 16    # reduced to fit in ~6 GiB VRAM
 GRAD_ACCUM_STEPS = 2     # effective batch = BATCH_SIZE × GRAD_ACCUM_STEPS = 32
-NUM_EPOCHS = 10
 LR = 1e-4
 WEIGHT_DECAY = 1e-4
+PATIENCE = 5
 
 USE_AMP = DEVICE.type == "cuda"   # automatic mixed precision halves VRAM usage
 
@@ -268,9 +285,14 @@ def run_experiment(
         optimizer, T_max=num_epochs)
     scaler = torch.amp.GradScaler(enabled=USE_AMP)
 
+    num_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(f"Trainable parameters: {num_params:,}")
+
+
     best_val_rmse = float("inf")
     best_state = None
     history = []
+    patience_counter = 0
 
     for epoch in range(1, num_epochs + 1):
         t0 = time.time()
@@ -290,6 +312,19 @@ def run_experiment(
         if val_m["rmse"] < best_val_rmse:
             best_val_rmse = val_m["rmse"]
             best_state = {k: v.clone() for k, v in model.state_dict().items()}
+            patience_counter = 0
+        else:
+            patience_counter += 1
+
+        if patience_counter >= PATIENCE:
+            print(f"Early stopping triggered at epoch {epoch}")
+            break
+
+    CHECKPOINT_DIR = RESULTS_DIR / "checkpoints"
+    CHECKPOINT_DIR.mkdir(exist_ok=True)
+    checkpoint_path = CHECKPOINT_DIR / f"{arch}_{img_type}_{img_size}.pth"
+    torch.save(best_state, checkpoint_path)
+
 
     model.load_state_dict(best_state)
     test_m = evaluate(model, test_loader)
@@ -309,6 +344,7 @@ def run_experiment(
         history=history,
         test_preds=test_m["preds"],
         test_labels=test_m["labels"],
+        num_params=num_params
     )
 
 
@@ -439,22 +475,25 @@ def print_summary(results: list[dict]) -> None:
         print(pivot[["original", "rectangular", "delta"]].to_string(
             float_format=lambda x: f"{x:.3f}"))
 
-
-# ── Entry point ────────────────────────────────────────────────────────────────
-
-def main() -> None:
-    parser = argparse.ArgumentParser()
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="")
     parser.add_argument("--quick", action="store_true",
                         help="Quick run: 3 epochs, 2000 training samples per config")
-    parser.add_argument("--epochs", type=int, default=None)
-    parser.add_argument("--models", nargs="+", default=None,
+    parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument("--models", nargs="+", default=MODEL_NAMES,
                         choices=MODEL_NAMES, help="Subset of models to run")
     parser.add_argument("--sizes", nargs="+", type=int, default=None)
     parser.add_argument("--types", nargs="+", default=None,
                         choices=IMAGE_TYPES)
-    args = parser.parse_args()
+    return parser.parse_args()
 
-    num_epochs = args.epochs or (3 if args.quick else NUM_EPOCHS)
+
+# ── Entry point ────────────────────────────────────────────────────────────────
+def main() -> None:
+    args = parse_arguments()
+    set_seed()
+
+    num_epochs = 3 if args.quick else args.epochs
     subset_train = 2000 if args.quick else None
     arch_list = args.models or MODEL_NAMES
     size_list = args.sizes or IMAGE_SIZES
