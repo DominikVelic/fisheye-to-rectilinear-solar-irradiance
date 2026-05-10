@@ -7,20 +7,62 @@ RESULTS_DIR = "results/predictions"
 def parse_filename(filename):
     """
     Parses the filename to extract model, input type, resolution, and timestamp.
-    Example filename: efficientnet_b0_original_224_20260510_123430.npz
+    Handles various naming conventions by dynamically finding key parts.
     """
-    parts = filename.replace('.npz', '').split('_')
-    model_name = f"{parts[0]}_{parts[1]}" # e.g., efficientnet_b0
-    input_type = parts[2] # e.g., original, rectilinear
-    resolution = int(parts[3]) # e.g., 224
-    timestamp = parts[4] # e.g., 20260510
-    time = parts[5] # e.g., 123430
+    base_name = filename.replace('.npz', '')
+    parts = base_name.split('_')
+
+    model_name = None
+    input_type = None
+    resolution = None
+    timestamp = None
+
+    input_type_keywords = ['original', 'rectangular']
+
+    # Find input_type and its index
+    input_type_idx = -1
+    for i, part in enumerate(parts):
+        if part in input_type_keywords:
+            input_type = part
+            input_type_idx = i
+            break
+
+    if input_type is None:
+        raise ValueError(f"Input type ('original' or 'rectangular') not found in filename: {filename}. Parts: {parts}")
+
+    # Find resolution and its index, searching after the input_type
+    resolution_idx = -1
+    for i in range(input_type_idx + 1, len(parts)):
+        try:
+            resolution = int(parts[i])
+            resolution_idx = i
+            break
+        except ValueError:
+            continue # Not an integer, keep looking
+
+    if resolution is None:
+        raise ValueError(f"Resolution (integer) not found after input type in filename: {filename}. Parts: {parts}")
+
+    # Determine model name: parts before the input_type
+    model_name_parts = parts[:input_type_idx]
+    model_name = "_".join(model_name_parts)
+    if not model_name:
+        raise ValueError(f"Model name could not be determined from filename (empty before input type): {filename}. Parts: {parts}")
+
+    # Determine timestamp: parts after the resolution
+    if resolution_idx + 1 < len(parts):
+        timestamp_parts = parts[resolution_idx + 1:]
+        timestamp = "_".join(timestamp_parts)
+    else:
+        timestamp = None # No timestamp found after resolution
+
     return {
         'model_name': model_name,
         'input_type': input_type,
         'resolution': resolution,
-        'timestamp': f"{timestamp}_{time}"
+        'timestamp': timestamp
     }
+
 
 def compare_results():
     script_dir = os.path.dirname(__file__)
@@ -41,10 +83,10 @@ def compare_results():
 
     for filename in npz_files:
         file_path = os.path.join(predictions_path, filename)
-        file_info = parse_filename(filename)
-        print(f"\nProcessing file: {filename}")
-
         try:
+            file_info = parse_filename(filename)
+            print(f"\nProcessing file: {filename}")
+
             data = np.load(file_path)
             preds = data['preds']
             labels = data['labels']
@@ -55,9 +97,9 @@ def compare_results():
 
             print(f"  Model: {file_info['model_name']}")
             print(f"  Input Type: {file_info['input_type']}")
-            print(f"  Resolution: {file_info['resolution']}x{file_info['resolution']}")
+            print(f"  Resolution: {file_info['resolution']}x{file_info['resolution']}" if file_info['resolution'] else "  Resolution: N/A")
             print(f"  MAE: {mae:.4f}")
-            print(f"  RMSE: {rmse:.4f}")
+            print(f"  RMSE: {rmse:.4f}") # Corrected line
 
             results.append({
                 'filename': filename,
@@ -67,29 +109,65 @@ def compare_results():
             })
 
         except Exception as e:
-            print(f"Error loading or processing {filename}: {e}")
+            print(f"Error processing {filename}: {e}")
 
     print("\n--- Summary of Results ---")
     # Sort results for better comparison, e.g., by model, then input type, then resolution
-    results.sort(key=lambda x: (x['model_name'], x['input_type'], x['resolution']))
+    results.sort(key=lambda x: (x['model_name'], x['input_type'], x['resolution'] if x['resolution'] is not None else -1))
 
     for res in results:
-        print(f"File: {res['filename']} | Model: {res['model_name']} | Input: {res['input_type']} | Res: {res['resolution']} | MAE: {res['mae']:.4f} | RMSE: {res['rmse']:.4f}")
+        res_str = f"Res: {res['resolution']}" if res['resolution'] is not None else "Res: N/A"
+        print(f"File: {res['filename']} | Model: {res['model_name']} | Input: {res['input_type']} | {res_str} | MAE: {res['mae']:.4f} | RMSE: {res['rmse']:.4f}")
 
     # Further analysis based on the assignment:
-    # To compare the impact of transformation (original vs. rectilinear),
-    # you would need to generate .npz files for 'rectilinear' input type as well.
-    # For example, a file named 'efficientnet_b0_rectilinear_224_...npz'
+    # Group results by model and input type for easier comparison
+    grouped_results = {}
+    for res in results:
+        key = (res['model_name'], res['input_type'])
+        if key not in grouped_results:
+            grouped_results[key] = []
+        grouped_results[key].append(res)
 
-    # Example of how you might compare 'original' vs 'rectilinear' if data were available:
-    # original_results = [r for r in results if r['input_type'] == 'original']
-    # rectilinear_results = [r for r in results if r['input_type'] == 'rectilinear']
-    #
-    # if original_results and rectilinear_results:
-    #     print("\n--- Comparison: Original vs. Rectilinear ---")
-    #     # You would then iterate and compare metrics for matching models/resolutions
-    #     # For instance, find the best performing 'original' and 'rectilinear' for a given model/resolution
-    #     pass # Placeholder for actual comparison logic
+    print("\n--- Detailed Comparison: Original vs. Rectangular ---")
+    all_models = sorted(list(set([res['model_name'] for res in results])))
+
+    for model in all_models:
+        print(f"\nModel: {model}")
+        original_data = [res for res in results if res['model_name'] == model and res['input_type'] == 'original']
+        rectangular_data = [res for res in results if res['model_name'] == model and res['input_type'] == 'rectangular']
+
+        if original_data:
+            print("  Original Input:")
+            for res in sorted(original_data, key=lambda x: x['resolution'] if x['resolution'] is not None else -1):
+                res_str = f"Res: {res['resolution']}" if res['resolution'] is not None else "Res: N/A"
+                print(f"    - {res_str} | MAE: {res['mae']:.4f} | RMSE: {res['rmse']:.4f}")
+        
+        if rectangular_data:
+            print("  Rectangular Input:")
+            for res in sorted(rectangular_data, key=lambda x: x['resolution'] if x['resolution'] is not None else -1):
+                res_str = f"Res: {res['resolution']}" if res['resolution'] is not None else "Res: N/A"
+                print(f"    - {res_str} | MAE: {res['mae']:.4f} | RMSE: {res['rmse']:.4f}")
+        
+        if original_data and rectangular_data:
+            print("  --- Comparison Summary ---")
+            # Simple comparison: find best MAE for each type and compare
+            best_original_mae = min(original_data, key=lambda x: x['mae'])
+            best_rectangular_mae = min(rectangular_data, key=lambda x: x['mae'])
+            
+            print(f"    Best Original MAE ({best_original_mae['resolution']}x{best_original_mae['resolution']}): {best_original_mae['mae']:.4f}")
+            print(f"    Best Rectangular MAE ({best_rectangular_mae['resolution']}x{best_rectangular_mae['resolution']}): {best_rectangular_mae['mae']:.4f}")
+            
+            if best_rectangular_mae['mae'] < best_original_mae['mae']:
+                print(f"    Rectangular transformation improved MAE by: {(best_original_mae['mae'] - best_rectangular_mae['mae']):.4f}")
+            else:
+                print(f"    Original input performed better or similarly in MAE.")
+        elif original_data:
+            print("  No rectangular data available for comparison.")
+        elif rectangular_data:
+            print("  No original data available for comparison.")
+        else:
+            print("  No data available for this model.")
+
 
 if __name__ == "__main__":
     compare_results()
