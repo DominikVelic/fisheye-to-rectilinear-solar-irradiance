@@ -1,0 +1,172 @@
+PS C:\Users\belan\Documents\fisheye-to-rectilinear-solar-irradiance> python .\solution.py --models resnet18
+Device:       cuda
+Epochs:       50
+Patience:     5
+Train subset: all
+Models:       ['resnet18']
+Sizes:        [224, 256, 320]
+Image types:  ['original', 'rectangular']
+
+────────────────────────────────────────────────────────────
+resnet18  type=original  size=224×224
+────────────────────────────────────────────────────────────
+Trainable parameters: 11,177,025
+  [ 1/50]  loss=0.0062  val_mae=30.57  val_rmse=39.99  val_r2=0.9777  (351s)
+  [ 2/50]  loss=0.0007  val_mae=37.32  val_rmse=50.00  val_r2=0.9651  (340s)
+  [ 3/50]  loss=0.0005  val_mae=18.09  val_rmse=25.02  val_r2=0.9913  (340s)
+  [ 4/50]  loss=0.0004  val_mae=19.62  val_rmse=27.97  val_r2=0.9891  (338s)
+  [ 5/50]  loss=0.0003  val_mae=23.87  val_rmse=33.14  val_r2=0.9847  (339s)
+  [ 6/50]  loss=0.0003  val_mae=17.46  val_rmse=24.14  val_r2=0.9919  (338s)
+  [ 7/50]  loss=0.0002  val_mae=10.94  val_rmse=16.51  val_r2=0.9962  (338s)
+  [ 8/50]  loss=0.0003  val_mae=18.86  val_rmse=22.60  val_r2=0.9929  (339s)
+  [ 9/50]  loss=0.0002  val_mae=16.08  val_rmse=20.49  val_r2=0.9941  (337s)
+  [10/50]  loss=0.0002  val_mae=16.94  val_rmse=22.52  val_r2=0.9929  (339s)
+  [11/50]  loss=0.0001  val_mae=69.39  val_rmse=71.86  val_r2=0.9280  (340s)
+  [12/50]  loss=0.0002  val_mae=12.68  val_rmse=17.51  val_r2=0.9957  (339s)
+Early stopping triggered at epoch 12
+
+  TEST  mae=10.93  rmse=15.85  r2=0.9966
+
+────────────────────────────────────────────────────────────
+resnet18  type=original  size=256×256
+────────────────────────────────────────────────────────────
+Trainable parameters: 11,177,025
+  [ 1/50]  loss=0.0066  val_mae=47.24  val_rmse=57.25  val_r2=0.9543  (363s)
+  [ 2/50]  loss=0.0006  val_mae=15.72  val_rmse=23.36  val_r2=0.9924  (347s)
+  [ 3/50]  loss=0.0004  val_mae=20.16  val_rmse=25.52  val_r2=0.9909  (356s)
+  [ 4/50]  loss=0.0003  val_mae=11.94  val_rmse=19.04  val_r2=0.9949  (346s)
+  [ 5/50]  loss=0.0003  val_mae=15.44  val_rmse=20.12  val_r2=0.9944  (346s)
+  [ 6/50]  loss=0.0002  val_mae=10.72  val_rmse=16.84  val_r2=0.9960  (347s)
+  [ 7/50]  loss=0.0002  val_mae=17.26  val_rmse=26.66  val_r2=0.9901  (345s)
+  [ 8/50]  loss=0.0002  val_mae=14.53  val_rmse=19.00  val_r2=0.9950  (345s)
+  [ 9/50]  loss=0.0002  val_mae=14.99  val_rmse=21.38  val_r2=0.9936  (347s)
+  [10/50]  loss=0.0002  val_mae=11.77  val_rmse=17.56  val_r2=0.9957  (362s)
+  [11/50]  loss=0.0001  val_mae=10.67  val_rmse=17.13  val_r2=0.9959  (357s)
+Early stopping triggered at epoch 11
+
+  TEST  mae=10.74  rmse=16.49  r2=0.9963
+
+────────────────────────────────────────────────────────────
+resnet18  type=original  size=320×320
+────────────────────────────────────────────────────────────
+Trainable parameters: 11,177,025
+  [ 1/50]  loss=0.0047  val_mae=27.74  val_rmse=35.58  val_r2=0.9823  (374s)
+  [ 2/50]  loss=0.0006  val_mae=17.17  val_rmse=23.76  val_r2=0.9921  (387s)
+  [ 3/50]  loss=0.0004  val_mae=14.60  val_rmse=21.08  val_r2=0.9938  (385s)
+  [ 4/50]  loss=0.0003  val_mae=20.15  val_rmse=27.87  val_r2=0.9892  (369s)
+  [ 5/50]  loss=0.0003  val_mae=55.54  val_rmse=58.30  val_r2=0.9526  (366s)
+  [ 6/50]  loss=0.0002  val_mae=12.64  val_rmse=17.77  val_r2=0.9956  (373s)
+  [ 7/50]  loss=0.0002  val_mae=10.51  val_rmse=15.90  val_r2=0.9965  (378s)
+  [ 8/50]  loss=0.0002  val_mae=13.46  val_rmse=17.79  val_r2=0.9956  (372s)
+  [ 9/50]  loss=0.0002  val_mae=11.29  val_rmse=16.66  val_r2=0.9961  (429s)
+  [10/50]  loss=0.0001  val_mae=9.65  val_rmse=14.69  val_r2=0.9970  (422s)
+  [11/50]  loss=0.0002  val_mae=8.99  val_rmse=14.77  val_r2=0.9970  (392s)
+  [12/50]  loss=0.0001  val_mae=11.26  val_rmse=16.20  val_r2=0.9963  (395s)
+  [13/50]  loss=0.0001  val_mae=13.71  val_rmse=17.02  val_r2=0.9960  (381s)
+  [14/50]  loss=0.0001  val_mae=11.69  val_rmse=15.71  val_r2=0.9966  (375s)
+  [15/50]  loss=0.0001  val_mae=18.52  val_rmse=21.51  val_r2=0.9935  (376s)
+Early stopping triggered at epoch 15
+
+  TEST  mae=9.46  rmse=13.83  r2=0.9974
+
+────────────────────────────────────────────────────────────
+resnet18  type=rectangular  size=224×224
+────────────────────────────────────────────────────────────
+Trainable parameters: 11,177,025
+  [ 1/50]  loss=0.0111  val_mae=65.56  val_rmse=86.35  val_r2=0.8961  (243s)
+  [ 2/50]  loss=0.0008  val_mae=23.15  val_rmse=30.99  val_r2=0.9866  (231s)
+  [ 3/50]  loss=0.0005  val_mae=18.42  val_rmse=26.35  val_r2=0.9903  (222s)
+  [ 4/50]  loss=0.0004  val_mae=14.46  val_rmse=21.83  val_r2=0.9934  (231s)
+  [ 5/50]  loss=0.0003  val_mae=21.83  val_rmse=31.51  val_r2=0.9862  (221s)
+  [ 6/50]  loss=0.0003  val_mae=11.75  val_rmse=18.13  val_r2=0.9954  (235s)
+  [ 7/50]  loss=0.0004  val_mae=11.61  val_rmse=18.10  val_r2=0.9954  (219s)
+  [ 8/50]  loss=0.0002  val_mae=14.21  val_rmse=22.18  val_r2=0.9931  (221s)
+  [ 9/50]  loss=0.0002  val_mae=23.00  val_rmse=29.15  val_r2=0.9882  (220s)
+  [10/50]  loss=0.0002  val_mae=22.80  val_rmse=36.77  val_r2=0.9811  (242s)
+  [11/50]  loss=0.0002  val_mae=19.10  val_rmse=29.88  val_r2=0.9876  (235s)
+  [12/50]  loss=0.0003  val_mae=8.59  val_rmse=14.65  val_r2=0.9970  (234s)
+  [13/50]  loss=0.0001  val_mae=8.92  val_rmse=14.77  val_r2=0.9970  (227s)
+  [14/50]  loss=0.0002  val_mae=13.50  val_rmse=22.72  val_r2=0.9928  (247s)
+  [15/50]  loss=0.0001  val_mae=8.62  val_rmse=14.07  val_r2=0.9972  (242s)
+  [16/50]  loss=0.0001  val_mae=10.64  val_rmse=17.77  val_r2=0.9956  (228s)
+  [17/50]  loss=0.0001  val_mae=10.27  val_rmse=16.81  val_r2=0.9961  (252s)
+  [18/50]  loss=0.0001  val_mae=8.08  val_rmse=14.15  val_r2=0.9972  (221s)
+  [19/50]  loss=0.0001  val_mae=9.46  val_rmse=15.35  val_r2=0.9967  (224s)
+  [20/50]  loss=0.0001  val_mae=8.58  val_rmse=14.37  val_r2=0.9971  (221s)
+Early stopping triggered at epoch 20
+
+  TEST  mae=8.37  rmse=13.24  r2=0.9976
+
+────────────────────────────────────────────────────────────
+resnet18  type=rectangular  size=256×256
+────────────────────────────────────────────────────────────
+Trainable parameters: 11,177,025
+  [ 1/50]  loss=0.0077  val_mae=28.65  val_rmse=39.92  val_r2=0.9778  (252s)
+  [ 2/50]  loss=0.0008  val_mae=20.36  val_rmse=30.16  val_r2=0.9873  (261s)
+  [ 3/50]  loss=0.0005  val_mae=26.78  val_rmse=34.51  val_r2=0.9834  (262s)
+  [ 4/50]  loss=0.0004  val_mae=21.46  val_rmse=26.80  val_r2=0.9900  (232s)
+  [ 5/50]  loss=0.0003  val_mae=16.04  val_rmse=23.51  val_r2=0.9923  (245s)
+  [ 6/50]  loss=0.0002  val_mae=13.12  val_rmse=19.11  val_r2=0.9949  (232s)
+  [ 7/50]  loss=0.0003  val_mae=12.26  val_rmse=18.88  val_r2=0.9950  (238s)
+  [ 8/50]  loss=0.0002  val_mae=20.71  val_rmse=28.71  val_r2=0.9885  (268s)
+  [ 9/50]  loss=0.0002  val_mae=12.59  val_rmse=18.41  val_r2=0.9953  (279s)
+  [10/50]  loss=0.0002  val_mae=18.27  val_rmse=24.69  val_r2=0.9915  (266s)
+  [11/50]  loss=0.0002  val_mae=12.05  val_rmse=18.32  val_r2=0.9953  (225s)
+  [12/50]  loss=0.0001  val_mae=8.44  val_rmse=14.56  val_r2=0.9970  (240s)
+  [13/50]  loss=0.0001  val_mae=9.06  val_rmse=14.43  val_r2=0.9971  (235s)
+  [14/50]  loss=0.0001  val_mae=12.22  val_rmse=19.00  val_r2=0.9950  (246s)
+  [15/50]  loss=0.0001  val_mae=11.89  val_rmse=16.88  val_r2=0.9960  (235s)
+  [16/50]  loss=0.0001  val_mae=9.06  val_rmse=14.30  val_r2=0.9971  (260s)
+  [17/50]  loss=0.0001  val_mae=6.55  val_rmse=11.94  val_r2=0.9980  (264s)
+  [18/50]  loss=0.0001  val_mae=7.45  val_rmse=13.41  val_r2=0.9975  (243s)
+  [19/50]  loss=0.0001  val_mae=8.01  val_rmse=13.79  val_r2=0.9973  (225s)
+  [20/50]  loss=0.0001  val_mae=7.74  val_rmse=12.27  val_r2=0.9979  (259s)
+  [21/50]  loss=0.0000  val_mae=6.90  val_rmse=12.25  val_r2=0.9979  (226s)
+  [22/50]  loss=0.0000  val_mae=9.05  val_rmse=14.28  val_r2=0.9972  (225s)
+Early stopping triggered at epoch 22
+
+  TEST  mae=6.41  rmse=10.83  r2=0.9984
+
+────────────────────────────────────────────────────────────
+resnet18  type=rectangular  size=320×320
+────────────────────────────────────────────────────────────
+Trainable parameters: 11,177,025
+  [ 1/50]  loss=0.0064  val_mae=27.12  val_rmse=37.14  val_r2=0.9808  (301s)
+  [ 2/50]  loss=0.0006  val_mae=22.28  val_rmse=31.84  val_r2=0.9859  (304s)
+  [ 3/50]  loss=0.0004  val_mae=26.66  val_rmse=36.61  val_r2=0.9813  (266s)
+  [ 4/50]  loss=0.0003  val_mae=13.70  val_rmse=19.46  val_r2=0.9947  (251s)
+  [ 5/50]  loss=0.0002  val_mae=24.99  val_rmse=29.92  val_r2=0.9875  (275s)
+  [ 6/50]  loss=0.0002  val_mae=11.54  val_rmse=17.08  val_r2=0.9959  (260s)
+  [ 7/50]  loss=0.0002  val_mae=9.94  val_rmse=15.32  val_r2=0.9967  (307s)
+  [ 8/50]  loss=0.0002  val_mae=23.46  val_rmse=30.86  val_r2=0.9867  (303s)
+  [ 9/50]  loss=0.0002  val_mae=17.37  val_rmse=24.26  val_r2=0.9918  (273s)
+  [10/50]  loss=0.0001  val_mae=26.82  val_rmse=32.82  val_r2=0.9850  (282s)
+  [11/50]  loss=0.0002  val_mae=13.79  val_rmse=19.38  val_r2=0.9948  (281s)
+  [12/50]  loss=0.0001  val_mae=14.25  val_rmse=18.11  val_r2=0.9954  (311s)
+Early stopping triggered at epoch 12
+
+  TEST  mae=9.57  rmse=14.51  r2=0.9972
+
+======================================================================
+RESULTS SUMMARY  (sorted by test RMSE)
+======================================================================
+    arch    img_type  img_size  test_mae  test_rmse  test_r2
+resnet18 rectangular       256     6.409     10.829    0.998
+resnet18 rectangular       224     8.374     13.238    0.998
+resnet18    original       320     9.463     13.834    0.997
+resnet18 rectangular       320     9.570     14.512    0.997
+resnet18    original       224    10.926     15.850    0.997
+resnet18    original       256    10.740     16.485    0.996
+
+======================================================================
+ΔRMSE = RMSE(rectangular) − RMSE(original)  [negative = rect is better]
+======================================================================
+img_type           original  rectangular  delta
+arch     img_size
+resnet18 224         15.850       13.238 -2.612
+         256         16.485       10.829 -5.656
+         320         13.834       14.512  0.678
+
+Plots saved to results/
+
+All done. Results in results/
