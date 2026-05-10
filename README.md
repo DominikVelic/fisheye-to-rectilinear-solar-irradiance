@@ -57,7 +57,7 @@ The transformation converts this to an **equirectangular** projection:
 - **y-axis** → zenith angle θ ∈ \[0°, 90°]
 
 Output size: `(H/2) × W` — for 1068×1068 input this gives 534×1068.  
-Implemented in `solution.py` via `fisheye_to_rectangular()` using `cv2.remap`.
+Implemented in `rectangular_caching.py` via `fisheye_to_rectangular()` using `cv2.remap`. Pre-converted images are cached to `data_rectangular/` before training starts.
 
 **Why this matters:** In the original fisheye image ~21% of pixels (corners) are black and meaningless. Angular areas near the horizon are compressed. The rectangular format gives all pixels uniform angular resolution and eliminates wasted corner pixels.
 
@@ -77,15 +77,17 @@ The full experiment tests every combination of:
 
 ### Training details
 
-| Parameter       | Value                          |
-|-----------------|--------------------------------|
-| Loss            | MSE (targets normalised by 1500 W/m²) |
-| Optimiser       | AdamW (lr=1e-4, weight_decay=1e-4) |
-| Scheduler       | Cosine annealing               |
-| Epochs          | 10                             |
-| Batch size      | 32                             |
-| Checkpoint      | Best validation RMSE           |
-| Pre-training    | ImageNet weights               |
+| Parameter       | Value                                                      |
+|-----------------|------------------------------------------------------------|
+| Loss            | MSE (targets normalised by 1500 W/m²)                     |
+| Optimiser       | AdamW (weight_decay=1e-4)                                  |
+| Learning rate   | Scaled linearly with batch size from base lr=3e-4 at batch=64 |
+| Scheduler       | Cosine annealing over all epochs                           |
+| Epochs          | 50 (with early stopping, patience=5)                       |
+| Batch size      | 64 (configurable via `--batch`)                            |
+| AMP             | Enabled on CUDA (float16 + GradScaler)                     |
+| Checkpoint      | Best validation RMSE per run                               |
+| Pre-training    | ImageNet weights                                           |
 
 Metrics reported on the test set (in original W/m² scale): **MAE**, **RMSE**, **R²**.
 
@@ -94,7 +96,7 @@ Metrics reported on the test set (in original W/m² scale): **MAE**, **RMSE**, *
 ## Usage
 
 ```bash
-# Full experiment (all 24 configs, 10 epochs each)
+# Full experiment (all 24 configs)
 python solution.py
 
 # Quick smoke-test (3 epochs, 2000 training samples per config)
@@ -104,7 +106,11 @@ python solution.py --quick
 python solution.py --models resnet18 efficientnet_b0 \
                    --types original rectangular \
                    --sizes 224 256 \
-                   --epochs 5
+                   --epochs 10 \
+                   --batch 128
+
+# Generate plots from saved results
+python plot_results.py
 ```
 
 ### CLI arguments
@@ -112,25 +118,27 @@ python solution.py --models resnet18 efficientnet_b0 \
 | Argument | Default | Description |
 |----------|---------|-------------|
 | `--quick` | off | 3 epochs, 2000 train samples — fast sanity check |
-| `--epochs N` | 10 | Number of training epochs |
+| `--epochs N` | 50 | Number of training epochs |
+| `--batch N` | 64 | Batch size (LR scales automatically) |
 | `--models ...` | all 4 | Space-separated subset of architectures |
 | `--sizes ...` | 224 256 320 | Input image sizes |
 | `--types ...` | both | `original`, `rectangular`, or both |
+| `--patience N` | 5 | Early stopping patience |
 
 ---
 
 ## Outputs
 
-All results are saved to `./results/`:
+All results are saved to `./results/` and persist across runs (CSV is appended, files are timestamped).
 
-| File | Description |
+| Path | Description |
 |------|-------------|
-| `results.csv` | MAE, RMSE, R² for every configuration |
-| `rmse_comparison.png` | Grouped bar chart: original vs rectangular per model and size |
-| `heatmap_original.png` | RMSE heatmap (arch × input size) for fisheye images |
-| `heatmap_rectangular.png` | RMSE heatmap for rectangular images |
-| `best_training_curve.png` | Validation MAE and RMSE curves for the best config |
-| `best_scatter.png` | Predicted vs true irradiance scatter for the best config |
+| `results/results.csv` | MAE, RMSE, R², timestamp for every configuration |
+| `results/checkpoints/` | Best model weights per run (`{arch}_{type}_{size}_{timestamp}.pth`) |
+| `results/history/` | Per-epoch train loss and val metrics in JSON |
+| `results/predictions/` | Test set predictions and labels in NPZ |
+
+Plots are generated separately by running `plot_results.py`, which reads from `results/results.csv`, `history/`, and `predictions/`.
 
 The console also prints a **ΔRMSE table** showing per model/size whether the rectangular format improves or hurts accuracy (negative = rectangular is better).
 
@@ -140,12 +148,23 @@ The console also prints a **ΔRMSE table** showing per model/size whether the re
 
 ```
 semestralka/
-├── data/
+├── data/                      # original fisheye images
 │   ├── train/
 │   ├── val/
 │   └── test/
-├── results/            # created on first run
-├── solution.py         # main experiment script
-├── uloha.md            # original task description (Slovak)
+├── data_rectangular/          # pre-converted equirectangular images (auto-generated)
+│   ├── train/
+│   ├── val/
+│   └── test/
+├── results/                   # created on first run
+│   ├── checkpoints/
+│   ├── history/
+│   ├── predictions/
+│   └── results.csv
+├── solution.py                # training script
+├── rectangular_caching.py     # fisheye → rectangular conversion
+├── plot_results.py            # plotting from saved results
+├── report.md                  # design decisions and methodology
+├── uloha.md                   # original task description (Slovak)
 └── README.md
 ```
