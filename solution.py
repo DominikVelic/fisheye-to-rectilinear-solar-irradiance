@@ -36,8 +36,9 @@ import json
 matplotlib.use("Agg")
 
 # ── Configuration ──────────────────────────────────────────────────────────────
+if torch.cuda.is_available() and os.name != "nt":
+    os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 DATA_DIR = Path("./data")
 DATA_RECTANGULAR = Path("./data_rectangular")
