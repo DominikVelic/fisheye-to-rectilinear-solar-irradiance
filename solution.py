@@ -137,16 +137,16 @@ class SkyDataset(Dataset):
 
 
 def make_loaders(
-    image_type: str, img_size: int, subset_train: int | None = None
+    image_type: str, img_size: int, batch_size: int, subset_train: int | None = None,
 ) -> tuple[DataLoader, DataLoader, DataLoader]:
     kw = dict(num_workers=NUM_WORKERS, pin_memory=(DEVICE.type == "cuda"))
     train_ds = SkyDataset("train", image_type, img_size, subset=subset_train)
     val_ds = SkyDataset("val",   image_type, img_size)
     test_ds = SkyDataset("test",  image_type, img_size)
     return (
-        DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle=True,  **kw),
-        DataLoader(val_ds,   batch_size=BATCH_SIZE, shuffle=False, **kw),
-        DataLoader(test_ds,  batch_size=BATCH_SIZE, shuffle=False, **kw),
+        DataLoader(train_ds, batch_size=batch_size, shuffle=True,  **kw),
+        DataLoader(val_ds,   batch_size=batch_size, shuffle=False, **kw),
+        DataLoader(test_ds,  batch_size=batch_size, shuffle=False, **kw),
     )
 
 
@@ -230,16 +230,18 @@ def run_experiment(
     subset_train: int | None,
     patience: int,
     timestamp: str,
+    batch_size: int,
+    lr: float,
 ) -> dict:
     tag = f"{arch}  type={img_type}  size={img_size}×{img_size}"
     print(f"\n{'─'*60}\n{tag}\n{'─'*60}")
 
     train_loader, val_loader, test_loader = make_loaders(
-        img_type, img_size, subset_train)
+        img_type, img_size, batch_size, subset_train)
 
     model = build_model(arch)
     criterion = nn.MSELoss()
-    optimizer = optim.AdamW(model.parameters(), lr=LR,
+    optimizer = optim.AdamW(model.parameters(), lr=lr,
                             weight_decay=WEIGHT_DECAY)
     scheduler = optim.lr_scheduler.CosineAnnealingLR(
         optimizer, T_max=num_epochs)
@@ -364,6 +366,7 @@ def parse_arguments():
     parser.add_argument("--quick", action="store_true",
                         help="Quick run: 3 epochs, 2000 training samples per config")
     parser.add_argument("--epochs", type=int, default=NUM_EPOCHS)
+    parser.add_argument("--batch", type=int, default=BATCH_SIZE)
     parser.add_argument("--models", nargs="+", default=MODEL_NAMES,
                         choices=MODEL_NAMES, help="Subset of models to run")
     parser.add_argument("--patience", type=int, default=PATIENCE)
@@ -389,10 +392,14 @@ def main() -> None:
     arch_list = args.models or MODEL_NAMES
     size_list = args.sizes or IMAGE_SIZES
     type_list = args.types or IMAGE_TYPES
+    batch_size = args.batch
+    # linear scaling rule: LR proportional to batch size
+    lr = LR * (batch_size / BATCH_SIZE)
     patience = args.patience
 
     print(f"Device:       {DEVICE}")
     print(f"Epochs:       {num_epochs}")
+    print(f"Batch size:   {batch_size}")
     print(f"Patience:     {patience}")
     print(f"Train subset: {subset_train or 'all'}")
     print(f"Models:       {arch_list}")
@@ -409,7 +416,7 @@ def main() -> None:
         for img_type in type_list:
             for img_size in size_list:
                 r = run_experiment(arch, img_type, img_size,
-                                   num_epochs, subset_train, patience, timestamp)
+                                   num_epochs, subset_train, patience, timestamp, batch_size)
                 results.append(r)
 
     # Save CSV summary
