@@ -1,0 +1,197 @@
+Device:       cuda
+Epochs:       50
+Patience:     5
+Train subset: all
+Models:       ['mobilenet_v3_small']
+Sizes:        [224, 256, 320]
+Image types:  ['original', 'rectangular']
+
+────────────────────────────────────────────────────────────
+mobilenet_v3_small  type=original  size=224×224
+────────────────────────────────────────────────────────────
+Trainable parameters: 1,518,881
+  [ 1/50]  loss=0.0101  val_mae=34.31  val_rmse=47.76  val_r2=0.9682  (56s)
+  [ 2/50]  loss=0.0024  val_mae=29.47  val_rmse=39.79  val_r2=0.9779  (67s)
+  [ 3/50]  loss=0.0013  val_mae=18.63  val_rmse=27.54  val_r2=0.9894  (70s)
+  [ 4/50]  loss=0.0008  val_mae=27.35  val_rmse=40.02  val_r2=0.9777  (69s)
+  [ 5/50]  loss=0.0006  val_mae=14.96  val_rmse=21.57  val_r2=0.9935  (70s)
+  [ 6/50]  loss=0.0004  val_mae=21.10  val_rmse=31.98  val_r2=0.9857  (70s)
+  [ 7/50]  loss=0.0003  val_mae=17.49  val_rmse=27.42  val_r2=0.9895  (71s)
+  [ 8/50]  loss=0.0003  val_mae=12.33  val_rmse=18.14  val_r2=0.9954  (71s)
+  [ 9/50]  loss=0.0003  val_mae=29.12  val_rmse=38.47  val_r2=0.9794  (69s)
+  [10/50]  loss=0.0002  val_mae=10.12  val_rmse=16.78  val_r2=0.9961  (69s)
+  [11/50]  loss=0.0002  val_mae=21.88  val_rmse=30.16  val_r2=0.9873  (70s)
+  [12/50]  loss=0.0003  val_mae=13.62  val_rmse=19.96  val_r2=0.9944  (71s)
+  [13/50]  loss=0.0002  val_mae=15.47  val_rmse=24.01  val_r2=0.9920  (70s)
+  [14/50]  loss=0.0002  val_mae=15.91  val_rmse=24.13  val_r2=0.9919  (70s)
+  [15/50]  loss=0.0002  val_mae=12.56  val_rmse=18.03  val_r2=0.9955  (70s)
+Early stopping triggered at epoch 15
+
+  TEST  mae=9.89  rmse=16.47  r2=0.9963
+
+────────────────────────────────────────────────────────────
+mobilenet_v3_small  type=original  size=256×256
+────────────────────────────────────────────────────────────
+Trainable parameters: 1,518,881
+  [ 1/50]  loss=0.0088  val_mae=66.30  val_rmse=83.30  val_r2=0.9033  (71s)
+  [ 2/50]  loss=0.0025  val_mae=29.53  val_rmse=43.00  val_r2=0.9742  (69s)
+  [ 3/50]  loss=0.0012  val_mae=16.78  val_rmse=27.18  val_r2=0.9897  (72s)
+  [ 4/50]  loss=0.0007  val_mae=15.78  val_rmse=24.07  val_r2=0.9919  (72s)
+  [ 5/50]  loss=0.0006  val_mae=15.22  val_rmse=23.25  val_r2=0.9925  (72s)
+  [ 6/50]  loss=0.0004  val_mae=12.35  val_rmse=20.09  val_r2=0.9944  (71s)
+  [ 7/50]  loss=0.0004  val_mae=17.62  val_rmse=25.82  val_r2=0.9907  (73s)
+  [ 8/50]  loss=0.0003  val_mae=10.78  val_rmse=17.70  val_r2=0.9956  (72s)
+  [ 9/50]  loss=0.0003  val_mae=9.91  val_rmse=16.48  val_r2=0.9962  (73s)
+  [10/50]  loss=0.0002  val_mae=12.04  val_rmse=19.26  val_r2=0.9948  (73s)
+  [11/50]  loss=0.0002  val_mae=19.84  val_rmse=26.77  val_r2=0.9900  (70s)
+  [12/50]  loss=0.0002  val_mae=9.30  val_rmse=15.37  val_r2=0.9967  (73s)
+  [13/50]  loss=0.0002  val_mae=12.41  val_rmse=19.68  val_r2=0.9946  (71s)
+  [14/50]  loss=0.0002  val_mae=12.88  val_rmse=20.76  val_r2=0.9940  (72s)
+  [15/50]  loss=0.0002  val_mae=11.19  val_rmse=17.38  val_r2=0.9958  (71s)
+  [16/50]  loss=0.0002  val_mae=12.03  val_rmse=17.12  val_r2=0.9959  (72s)
+  [17/50]  loss=0.0002  val_mae=19.50  val_rmse=27.29  val_r2=0.9896  (72s)
+Early stopping triggered at epoch 17
+
+  TEST  mae=9.15  rmse=15.21  r2=0.9969
+
+────────────────────────────────────────────────────────────
+mobilenet_v3_small  type=original  size=320×320
+────────────────────────────────────────────────────────────
+Trainable parameters: 1,518,881
+  [ 1/50]  loss=0.0085  val_mae=40.73  val_rmse=54.87  val_r2=0.9580  (75s)
+  [ 2/50]  loss=0.0022  val_mae=28.46  val_rmse=36.98  val_r2=0.9809  (76s)
+  [ 3/50]  loss=0.0013  val_mae=22.38  val_rmse=30.88  val_r2=0.9867  (76s)
+  [ 4/50]  loss=0.0007  val_mae=15.79  val_rmse=23.21  val_r2=0.9925  (75s)
+  [ 5/50]  loss=0.0006  val_mae=17.83  val_rmse=23.35  val_r2=0.9924  (76s)
+  [ 6/50]  loss=0.0004  val_mae=18.83  val_rmse=25.85  val_r2=0.9907  (75s)
+  [ 7/50]  loss=0.0004  val_mae=19.39  val_rmse=25.55  val_r2=0.9909  (75s)
+  [ 8/50]  loss=0.0003  val_mae=13.17  val_rmse=19.53  val_r2=0.9947  (76s)
+  [ 9/50]  loss=0.0003  val_mae=12.62  val_rmse=20.10  val_r2=0.9944  (75s)
+  [10/50]  loss=0.0002  val_mae=13.47  val_rmse=19.53  val_r2=0.9947  (73s)
+  [11/50]  loss=0.0002  val_mae=12.85  val_rmse=17.99  val_r2=0.9955  (76s)
+  [12/50]  loss=0.0003  val_mae=13.46  val_rmse=20.12  val_r2=0.9944  (75s)
+  [13/50]  loss=0.0002  val_mae=20.92  val_rmse=26.34  val_r2=0.9903  (73s)
+  [14/50]  loss=0.0002  val_mae=15.74  val_rmse=21.80  val_r2=0.9934  (75s)
+  [15/50]  loss=0.0002  val_mae=17.61  val_rmse=24.30  val_r2=0.9918  (75s)
+  [16/50]  loss=0.0002  val_mae=9.38  val_rmse=15.32  val_r2=0.9967  (74s)
+  [17/50]  loss=0.0002  val_mae=20.44  val_rmse=24.05  val_r2=0.9919  (76s)
+  [18/50]  loss=0.0001  val_mae=14.84  val_rmse=20.42  val_r2=0.9942  (75s)
+  [19/50]  loss=0.0002  val_mae=22.30  val_rmse=27.44  val_r2=0.9895  (74s)
+  [20/50]  loss=0.0001  val_mae=18.13  val_rmse=22.77  val_r2=0.9928  (77s)
+  [21/50]  loss=0.0002  val_mae=15.99  val_rmse=19.57  val_r2=0.9947  (73s)
+Early stopping triggered at epoch 21
+
+  TEST  mae=9.26  rmse=15.06  r2=0.9969
+
+────────────────────────────────────────────────────────────
+mobilenet_v3_small  type=rectangular  size=224×224
+────────────────────────────────────────────────────────────
+Trainable parameters: 1,518,881
+  [ 1/50]  loss=0.0121  val_mae=56.13  val_rmse=71.32  val_r2=0.9291  (34s)
+  [ 2/50]  loss=0.0025  val_mae=24.64  val_rmse=34.93  val_r2=0.9830  (35s)
+  [ 3/50]  loss=0.0014  val_mae=23.44  val_rmse=33.92  val_r2=0.9840  (34s)
+  [ 4/50]  loss=0.0008  val_mae=17.96  val_rmse=26.99  val_r2=0.9898  (36s)
+  [ 5/50]  loss=0.0006  val_mae=16.49  val_rmse=26.30  val_r2=0.9904  (35s)
+  [ 6/50]  loss=0.0005  val_mae=15.27  val_rmse=22.25  val_r2=0.9931  (35s)
+  [ 7/50]  loss=0.0004  val_mae=14.71  val_rmse=21.62  val_r2=0.9935  (34s)
+  [ 8/50]  loss=0.0003  val_mae=20.48  val_rmse=28.11  val_r2=0.9890  (35s)
+  [ 9/50]  loss=0.0003  val_mae=11.88  val_rmse=18.86  val_r2=0.9950  (35s)
+  [10/50]  loss=0.0002  val_mae=11.88  val_rmse=18.65  val_r2=0.9951  (35s)
+  [11/50]  loss=0.0002  val_mae=13.29  val_rmse=18.72  val_r2=0.9951  (36s)
+  [12/50]  loss=0.0002  val_mae=18.85  val_rmse=29.56  val_r2=0.9878  (35s)
+  [13/50]  loss=0.0002  val_mae=10.72  val_rmse=16.65  val_r2=0.9961  (35s)
+  [14/50]  loss=0.0002  val_mae=9.90  val_rmse=16.30  val_r2=0.9963  (35s)
+  [15/50]  loss=0.0002  val_mae=18.43  val_rmse=27.33  val_r2=0.9896  (35s)
+  [16/50]  loss=0.0002  val_mae=10.98  val_rmse=17.25  val_r2=0.9958  (35s)
+  [17/50]  loss=0.0002  val_mae=10.42  val_rmse=17.17  val_r2=0.9959  (34s)
+  [18/50]  loss=0.0002  val_mae=11.23  val_rmse=17.00  val_r2=0.9960  (35s)
+  [19/50]  loss=0.0002  val_mae=13.50  val_rmse=20.03  val_r2=0.9944  (35s)
+Early stopping triggered at epoch 19
+
+  TEST  mae=9.91  rmse=16.19  r2=0.9965
+
+────────────────────────────────────────────────────────────
+mobilenet_v3_small  type=rectangular  size=256×256
+────────────────────────────────────────────────────────────
+Trainable parameters: 1,518,881
+  [ 1/50]  loss=0.0100  val_mae=60.22  val_rmse=79.94  val_r2=0.9109  (36s)
+  [ 2/50]  loss=0.0025  val_mae=32.70  val_rmse=44.03  val_r2=0.9730  (36s)
+  [ 3/50]  loss=0.0013  val_mae=43.54  val_rmse=56.37  val_r2=0.9557  (35s)
+  [ 4/50]  loss=0.0008  val_mae=18.04  val_rmse=27.70  val_r2=0.9893  (35s)
+  [ 5/50]  loss=0.0005  val_mae=15.18  val_rmse=23.42  val_r2=0.9924  (36s)
+  [ 6/50]  loss=0.0004  val_mae=13.06  val_rmse=21.03  val_r2=0.9938  (36s)
+  [ 7/50]  loss=0.0003  val_mae=14.52  val_rmse=22.00  val_r2=0.9933  (36s)
+  [ 8/50]  loss=0.0003  val_mae=13.31  val_rmse=21.21  val_r2=0.9937  (36s)
+  [ 9/50]  loss=0.0003  val_mae=13.74  val_rmse=21.77  val_r2=0.9934  (36s)
+  [10/50]  loss=0.0003  val_mae=15.05  val_rmse=22.81  val_r2=0.9927  (36s)
+  [11/50]  loss=0.0002  val_mae=10.35  val_rmse=17.37  val_r2=0.9958  (37s)
+  [12/50]  loss=0.0002  val_mae=12.98  val_rmse=18.64  val_r2=0.9952  (37s)
+  [13/50]  loss=0.0002  val_mae=15.84  val_rmse=20.58  val_r2=0.9941  (36s)
+  [14/50]  loss=0.0002  val_mae=12.18  val_rmse=19.08  val_r2=0.9949  (36s)
+  [15/50]  loss=0.0002  val_mae=11.81  val_rmse=16.59  val_r2=0.9962  (36s)
+  [16/50]  loss=0.0002  val_mae=9.69  val_rmse=16.33  val_r2=0.9963  (36s)
+  [17/50]  loss=0.0002  val_mae=12.22  val_rmse=18.35  val_r2=0.9953  (36s)
+  [18/50]  loss=0.0002  val_mae=10.45  val_rmse=16.61  val_r2=0.9962  (36s)
+  [19/50]  loss=0.0001  val_mae=10.66  val_rmse=17.59  val_r2=0.9957  (36s)
+  [20/50]  loss=0.0002  val_mae=11.46  val_rmse=17.22  val_r2=0.9959  (36s)
+  [21/50]  loss=0.0001  val_mae=19.46  val_rmse=23.79  val_r2=0.9921  (36s)
+Early stopping triggered at epoch 21
+
+  TEST  mae=9.49  rmse=15.67  r2=0.9967
+
+────────────────────────────────────────────────────────────
+mobilenet_v3_small  type=rectangular  size=320×320
+────────────────────────────────────────────────────────────
+Trainable parameters: 1,518,881
+  [ 1/50]  loss=0.0084  val_mae=60.00  val_rmse=74.18  val_r2=0.9233  (39s)
+  [ 2/50]  loss=0.0022  val_mae=41.11  val_rmse=53.51  val_r2=0.9601  (39s)
+  [ 3/50]  loss=0.0012  val_mae=25.29  val_rmse=33.53  val_r2=0.9843  (39s)
+  [ 4/50]  loss=0.0007  val_mae=19.45  val_rmse=27.20  val_r2=0.9897  (39s)
+  [ 5/50]  loss=0.0006  val_mae=15.24  val_rmse=23.23  val_r2=0.9925  (38s)
+  [ 6/50]  loss=0.0004  val_mae=15.84  val_rmse=25.36  val_r2=0.9910  (39s)
+  [ 7/50]  loss=0.0003  val_mae=15.29  val_rmse=22.04  val_r2=0.9932  (39s)
+  [ 8/50]  loss=0.0003  val_mae=26.57  val_rmse=38.08  val_r2=0.9798  (39s)
+  [ 9/50]  loss=0.0003  val_mae=18.16  val_rmse=27.14  val_r2=0.9897  (39s)
+  [10/50]  loss=0.0002  val_mae=14.85  val_rmse=21.85  val_r2=0.9933  (38s)
+  [11/50]  loss=0.0002  val_mae=10.21  val_rmse=17.40  val_r2=0.9958  (39s)
+  [12/50]  loss=0.0002  val_mae=10.66  val_rmse=17.02  val_r2=0.9960  (39s)
+  [13/50]  loss=0.0002  val_mae=9.61  val_rmse=15.82  val_r2=0.9965  (39s)
+  [14/50]  loss=0.0002  val_mae=10.50  val_rmse=15.73  val_r2=0.9965  (38s)
+  [15/50]  loss=0.0002  val_mae=10.82  val_rmse=17.25  val_r2=0.9959  (39s)
+  [16/50]  loss=0.0001  val_mae=13.42  val_rmse=19.44  val_r2=0.9947  (40s)
+  [17/50]  loss=0.0001  val_mae=10.32  val_rmse=16.05  val_r2=0.9964  (39s)
+  [18/50]  loss=0.0002  val_mae=10.32  val_rmse=15.39  val_r2=0.9967  (38s)
+  [19/50]  loss=0.0001  val_mae=9.61  val_rmse=15.66  val_r2=0.9966  (39s)
+  [20/50]  loss=0.0001  val_mae=22.22  val_rmse=30.72  val_r2=0.9868  (39s)
+  [21/50]  loss=0.0001  val_mae=9.66  val_rmse=14.79  val_r2=0.9970  (40s)
+  [22/50]  loss=0.0001  val_mae=8.47  val_rmse=13.96  val_r2=0.9973  (38s)
+  [23/50]  loss=0.0001  val_mae=23.81  val_rmse=26.71  val_r2=0.9901  (39s)
+  [24/50]  loss=0.0001  val_mae=12.34  val_rmse=17.24  val_r2=0.9959  (40s)
+  [25/50]  loss=0.0001  val_mae=13.15  val_rmse=17.45  val_r2=0.9958  (39s)
+  [26/50]  loss=0.0001  val_mae=11.55  val_rmse=17.28  val_r2=0.9958  (39s)
+  [27/50]  loss=0.0001  val_mae=11.08  val_rmse=16.57  val_r2=0.9962  (40s)
+Early stopping triggered at epoch 27
+
+  TEST  mae=8.26  rmse=13.13  r2=0.9977
+
+======================================================================
+RESULTS SUMMARY  (sorted by test RMSE)
+======================================================================
+              arch    img_type  img_size  test_mae  test_rmse  test_r2
+mobilenet_v3_small rectangular       320     8.256     13.130    0.998
+mobilenet_v3_small    original       320     9.257     15.064    0.997
+mobilenet_v3_small    original       256     9.148     15.207    0.997
+mobilenet_v3_small rectangular       256     9.495     15.674    0.997
+mobilenet_v3_small rectangular       224     9.912     16.193    0.996
+mobilenet_v3_small    original       224     9.894     16.471    0.996
+
+======================================================================
+ΔRMSE = RMSE(rectangular) − RMSE(original)  [negative = rect is better]
+======================================================================
+img_type                     original  rectangular  delta
+arch               img_size
+mobilenet_v3_small 224         16.471       16.193 -0.277
+                   256         15.207       15.674  0.467
+                   320         15.064       13.130 -1.934
+
+All done. Results in results/
