@@ -46,7 +46,7 @@ for _d in (RESULTS_DIR, CHECKPOINT_DIR, HISTORY_DIR, PREDICTIONS_DIR):
     _d.mkdir(exist_ok=True)
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-NUM_WORKERS = min(4, os.cpu_count() or 1)
+NUM_WORKERS = min(8, os.cpu_count() or 1)
 
 SEED = 42
 
@@ -83,10 +83,10 @@ EFFICIENT_B0 = "efficientnet_b0"
 MODEL_NAMES = [RESNET18, RESNET50, MOBILENET_V3_SMALL, EFFICIENT_B0]
 
 # Training hyper-parameters
-BATCH_SIZE = 16    # reduced to fit in ~6 GiB VRAM
+BATCH_SIZE = 64
 NUM_EPOCHS = 50
-GRAD_ACCUM_STEPS = 2     # effective batch = BATCH_SIZE × GRAD_ACCUM_STEPS = 32
-LR = 1e-4
+GRAD_ACCUM_STEPS = 1
+LR = 3e-4
 WEIGHT_DECAY = 1e-4
 PATIENCE = 5
 
