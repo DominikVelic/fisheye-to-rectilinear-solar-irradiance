@@ -33,7 +33,7 @@ import datetime
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+os.environ["PYTORCH_ALLOC_CONF"] = "expandable_segments:True"
 
 DATA_DIR = Path("./data")
 DATA_RECTANGULAR = Path("./data_rectangular")
@@ -90,7 +90,7 @@ LR = 3e-4
 WEIGHT_DECAY = 1e-4
 PATIENCE = 5
 
-USE_AMP = DEVICE.type == "cuda"   # automatic mixed precision halves VRAM usage
+USE_AMP = False #DEVICE.type == "cuda"   # automatic mixed precision halves VRAM usage
 
 # ── Dataset ────────────────────────────────────────────────────────────────────
 
