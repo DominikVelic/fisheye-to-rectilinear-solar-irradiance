@@ -1,0 +1,217 @@
+Device:       cuda
+Epochs:       50
+Patience:     5
+Train subset: all
+Models:       ['resnet50']
+Sizes:        [224, 256, 320]
+Image types:  ['original', 'rectangular']
+
+────────────────────────────────────────────────────────────
+resnet50  type=original  size=224×224
+────────────────────────────────────────────────────────────
+Trainable parameters: 23,510,081
+  [ 1/50]  loss=0.0019  val_mae=18.49  val_rmse=27.93  val_r2=0.9891  (67s)
+  [ 2/50]  loss=0.0003  val_mae=14.25  val_rmse=22.17  val_r2=0.9931  (70s)
+  [ 3/50]  loss=0.0002  val_mae=18.27  val_rmse=25.93  val_r2=0.9906  (71s)
+  [ 4/50]  loss=0.0001  val_mae=22.48  val_rmse=32.24  val_r2=0.9855  (70s)
+  [ 5/50]  loss=0.0001  val_mae=15.56  val_rmse=23.84  val_r2=0.9921  (70s)
+  [ 6/50]  loss=0.0001  val_mae=11.49  val_rmse=18.48  val_r2=0.9952  (71s)
+  [ 7/50]  loss=0.0001  val_mae=11.57  val_rmse=19.50  val_r2=0.9947  (69s)
+  [ 8/50]  loss=0.0001  val_mae=11.11  val_rmse=16.97  val_r2=0.9960  (69s)
+  [ 9/50]  loss=0.0001  val_mae=12.08  val_rmse=19.26  val_r2=0.9948  (71s)
+  [10/50]  loss=0.0001  val_mae=8.57  val_rmse=15.21  val_r2=0.9968  (71s)
+  [11/50]  loss=0.0001  val_mae=8.31  val_rmse=14.43  val_r2=0.9971  (71s)
+  [12/50]  loss=0.0001  val_mae=13.05  val_rmse=20.82  val_r2=0.9940  (70s)
+  [13/50]  loss=0.0001  val_mae=14.07  val_rmse=22.06  val_r2=0.9932  (70s)
+  [14/50]  loss=0.0001  val_mae=14.89  val_rmse=22.10  val_r2=0.9932  (70s)
+  [15/50]  loss=0.0001  val_mae=12.13  val_rmse=17.79  val_r2=0.9956  (70s)
+  [16/50]  loss=0.0000  val_mae=7.17  val_rmse=13.08  val_r2=0.9976  (71s)
+  [17/50]  loss=0.0000  val_mae=9.53  val_rmse=15.70  val_r2=0.9966  (71s)
+  [18/50]  loss=0.0001  val_mae=9.55  val_rmse=14.64  val_r2=0.9970  (71s)
+  [19/50]  loss=0.0001  val_mae=6.42  val_rmse=12.38  val_r2=0.9979  (70s)
+  [20/50]  loss=0.0000  val_mae=7.64  val_rmse=13.30  val_r2=0.9975  (70s)
+  [21/50]  loss=0.0000  val_mae=9.03  val_rmse=15.51  val_r2=0.9966  (70s)
+  [22/50]  loss=0.0000  val_mae=9.90  val_rmse=15.15  val_r2=0.9968  (70s)
+  [23/50]  loss=0.0001  val_mae=8.34  val_rmse=14.44  val_r2=0.9971  (71s)
+  [24/50]  loss=0.0000  val_mae=14.00  val_rmse=18.08  val_r2=0.9954  (69s)
+Early stopping triggered at epoch 24
+
+  TEST  mae=6.15  rmse=11.31  r2=0.9983
+
+────────────────────────────────────────────────────────────
+resnet50  type=original  size=256×256
+────────────────────────────────────────────────────────────
+Trainable parameters: 23,510,081
+  [ 1/50]  loss=0.0018  val_mae=60.88  val_rmse=76.54  val_r2=0.9183  (72s)
+  [ 2/50]  loss=0.0003  val_mae=12.96  val_rmse=20.30  val_r2=0.9943  (72s)
+  [ 3/50]  loss=0.0002  val_mae=10.71  val_rmse=17.08  val_r2=0.9959  (72s)
+  [ 4/50]  loss=0.0001  val_mae=15.70  val_rmse=22.88  val_r2=0.9927  (72s)
+  [ 5/50]  loss=0.0001  val_mae=18.48  val_rmse=23.41  val_r2=0.9924  (72s)
+  [ 6/50]  loss=0.0001  val_mae=10.27  val_rmse=16.62  val_r2=0.9961  (71s)
+  [ 7/50]  loss=0.0001  val_mae=9.29  val_rmse=15.69  val_r2=0.9966  (72s)
+  [ 8/50]  loss=0.0001  val_mae=9.50  val_rmse=15.57  val_r2=0.9966  (72s)
+  [ 9/50]  loss=0.0001  val_mae=18.70  val_rmse=26.16  val_r2=0.9905  (71s)
+  [10/50]  loss=0.0001  val_mae=8.02  val_rmse=13.87  val_r2=0.9973  (73s)
+  [11/50]  loss=0.0001  val_mae=8.36  val_rmse=14.70  val_r2=0.9970  (72s)
+  [12/50]  loss=0.0001  val_mae=8.38  val_rmse=14.58  val_r2=0.9970  (72s)
+  [13/50]  loss=0.0001  val_mae=8.03  val_rmse=13.71  val_r2=0.9974  (71s)
+  [14/50]  loss=0.0000  val_mae=8.97  val_rmse=14.88  val_r2=0.9969  (72s)
+  [15/50]  loss=0.0001  val_mae=10.56  val_rmse=16.25  val_r2=0.9963  (71s)
+  [16/50]  loss=0.0001  val_mae=6.63  val_rmse=12.49  val_r2=0.9978  (72s)
+  [17/50]  loss=0.0000  val_mae=11.40  val_rmse=17.61  val_r2=0.9957  (75s)
+  [18/50]  loss=0.0001  val_mae=6.96  val_rmse=12.96  val_r2=0.9977  (72s)
+  [19/50]  loss=0.0001  val_mae=8.89  val_rmse=14.74  val_r2=0.9970  (73s)
+  [20/50]  loss=0.0000  val_mae=6.67  val_rmse=12.68  val_r2=0.9978  (71s)
+  [21/50]  loss=0.0000  val_mae=9.57  val_rmse=15.76  val_r2=0.9965  (75s)
+Early stopping triggered at epoch 21
+
+  TEST  mae=6.42  rmse=12.22  r2=0.9980
+
+────────────────────────────────────────────────────────────
+resnet50  type=original  size=320×320
+────────────────────────────────────────────────────────────
+Trainable parameters: 23,510,081
+  [ 1/50]  loss=0.0015  val_mae=14.47  val_rmse=22.09  val_r2=0.9932  (77s)
+  [ 2/50]  loss=0.0002  val_mae=14.93  val_rmse=22.68  val_r2=0.9928  (75s)
+  [ 3/50]  loss=0.0002  val_mae=12.96  val_rmse=19.19  val_r2=0.9949  (78s)
+  [ 4/50]  loss=0.0001  val_mae=10.21  val_rmse=15.60  val_r2=0.9966  (76s)
+  [ 5/50]  loss=0.0001  val_mae=10.29  val_rmse=17.51  val_r2=0.9957  (79s)
+  [ 6/50]  loss=0.0001  val_mae=10.27  val_rmse=15.60  val_r2=0.9966  (77s)
+  [ 7/50]  loss=0.0001  val_mae=9.56  val_rmse=15.95  val_r2=0.9965  (77s)
+  [ 8/50]  loss=0.0001  val_mae=16.84  val_rmse=22.72  val_r2=0.9928  (77s)
+  [ 9/50]  loss=0.0001  val_mae=8.42  val_rmse=14.71  val_r2=0.9970  (76s)
+  [10/50]  loss=0.0001  val_mae=7.74  val_rmse=13.92  val_r2=0.9973  (75s)
+  [11/50]  loss=0.0001  val_mae=8.26  val_rmse=14.53  val_r2=0.9971  (76s)
+  [12/50]  loss=0.0001  val_mae=7.64  val_rmse=13.51  val_r2=0.9975  (77s)
+  [13/50]  loss=0.0001  val_mae=10.14  val_rmse=16.90  val_r2=0.9960  (75s)
+  [14/50]  loss=0.0001  val_mae=7.73  val_rmse=13.69  val_r2=0.9974  (76s)
+  [15/50]  loss=0.0001  val_mae=8.52  val_rmse=14.65  val_r2=0.9970  (76s)
+  [16/50]  loss=0.0000  val_mae=11.57  val_rmse=18.50  val_r2=0.9952  (77s)
+  [17/50]  loss=0.0001  val_mae=11.27  val_rmse=17.78  val_r2=0.9956  (74s)
+Early stopping triggered at epoch 17
+
+  TEST  mae=7.39  rmse=12.59  r2=0.9979
+
+────────────────────────────────────────────────────────────
+resnet50  type=rectangular  size=224×224
+────────────────────────────────────────────────────────────
+Trainable parameters: 23,510,081
+  [ 1/50]  loss=0.0015  val_mae=16.73  val_rmse=24.92  val_r2=0.9913  (35s)
+  [ 2/50]  loss=0.0002  val_mae=17.98  val_rmse=27.00  val_r2=0.9898  (35s)
+  [ 3/50]  loss=0.0002  val_mae=16.35  val_rmse=25.90  val_r2=0.9906  (35s)
+  [ 4/50]  loss=0.0001  val_mae=10.48  val_rmse=16.98  val_r2=0.9960  (35s)
+  [ 5/50]  loss=0.0001  val_mae=10.75  val_rmse=17.03  val_r2=0.9960  (35s)
+  [ 6/50]  loss=0.0001  val_mae=10.06  val_rmse=17.02  val_r2=0.9960  (36s)
+  [ 7/50]  loss=0.0001  val_mae=10.57  val_rmse=16.74  val_r2=0.9961  (36s)
+  [ 8/50]  loss=0.0001  val_mae=8.50  val_rmse=14.48  val_r2=0.9971  (35s)
+  [ 9/50]  loss=0.0001  val_mae=10.94  val_rmse=17.62  val_r2=0.9957  (35s)
+  [10/50]  loss=0.0001  val_mae=9.79  val_rmse=16.07  val_r2=0.9964  (35s)
+  [11/50]  loss=0.0001  val_mae=8.77  val_rmse=15.18  val_r2=0.9968  (35s)
+  [12/50]  loss=0.0000  val_mae=8.72  val_rmse=14.44  val_r2=0.9971  (35s)
+  [13/50]  loss=0.0001  val_mae=10.38  val_rmse=16.99  val_r2=0.9960  (36s)
+  [14/50]  loss=0.0001  val_mae=9.42  val_rmse=15.54  val_r2=0.9966  (35s)
+  [15/50]  loss=0.0001  val_mae=7.99  val_rmse=14.01  val_r2=0.9973  (36s)
+  [16/50]  loss=0.0001  val_mae=8.24  val_rmse=14.69  val_r2=0.9970  (34s)
+  [17/50]  loss=0.0001  val_mae=7.51  val_rmse=13.68  val_r2=0.9974  (35s)
+  [18/50]  loss=0.0000  val_mae=7.62  val_rmse=13.44  val_r2=0.9975  (35s)
+  [19/50]  loss=0.0000  val_mae=7.76  val_rmse=13.62  val_r2=0.9974  (35s)
+  [20/50]  loss=0.0000  val_mae=9.80  val_rmse=15.86  val_r2=0.9965  (35s)
+  [21/50]  loss=0.0000  val_mae=7.16  val_rmse=13.27  val_r2=0.9975  (35s)
+  [22/50]  loss=0.0000  val_mae=9.09  val_rmse=15.49  val_r2=0.9967  (36s)
+  [23/50]  loss=0.0000  val_mae=7.20  val_rmse=13.04  val_r2=0.9976  (36s)
+  [24/50]  loss=0.0000  val_mae=6.52  val_rmse=12.64  val_r2=0.9978  (35s)
+  [25/50]  loss=0.0000  val_mae=6.65  val_rmse=12.76  val_r2=0.9977  (35s)
+  [26/50]  loss=0.0000  val_mae=6.19  val_rmse=11.80  val_r2=0.9981  (36s)
+  [27/50]  loss=0.0000  val_mae=5.85  val_rmse=11.71  val_r2=0.9981  (36s)
+  [28/50]  loss=0.0000  val_mae=6.19  val_rmse=11.93  val_r2=0.9980  (35s)
+  [29/50]  loss=0.0000  val_mae=5.81  val_rmse=11.95  val_r2=0.9980  (35s)
+  [30/50]  loss=0.0000  val_mae=6.19  val_rmse=12.15  val_r2=0.9979  (36s)
+  [31/50]  loss=0.0000  val_mae=6.74  val_rmse=12.34  val_r2=0.9979  (36s)
+  [32/50]  loss=0.0000  val_mae=5.54  val_rmse=11.38  val_r2=0.9982  (36s)
+  [33/50]  loss=0.0000  val_mae=5.40  val_rmse=11.36  val_r2=0.9982  (36s)
+  [34/50]  loss=0.0000  val_mae=5.21  val_rmse=11.24  val_r2=0.9982  (35s)
+  [35/50]  loss=0.0000  val_mae=5.71  val_rmse=11.44  val_r2=0.9982  (35s)
+  [36/50]  loss=0.0000  val_mae=4.93  val_rmse=10.98  val_r2=0.9983  (37s)
+  [37/50]  loss=0.0000  val_mae=4.97  val_rmse=11.10  val_r2=0.9983  (35s)
+  [38/50]  loss=0.0000  val_mae=5.05  val_rmse=11.12  val_r2=0.9983  (36s)
+  [39/50]  loss=0.0000  val_mae=5.21  val_rmse=11.22  val_r2=0.9982  (35s)
+  [40/50]  loss=0.0000  val_mae=4.97  val_rmse=11.03  val_r2=0.9983  (35s)
+  [41/50]  loss=0.0000  val_mae=5.04  val_rmse=11.05  val_r2=0.9983  (36s)
+Early stopping triggered at epoch 41
+
+  TEST  mae=4.69  rmse=9.85  r2=0.9987
+
+────────────────────────────────────────────────────────────
+resnet50  type=rectangular  size=256×256
+────────────────────────────────────────────────────────────
+Trainable parameters: 23,510,081
+  [ 1/50]  loss=0.0017  val_mae=16.49  val_rmse=25.74  val_r2=0.9908  (37s)
+  [ 2/50]  loss=0.0003  val_mae=17.39  val_rmse=25.35  val_r2=0.9910  (37s)
+  [ 3/50]  loss=0.0002  val_mae=16.58  val_rmse=24.92  val_r2=0.9913  (37s)
+  [ 4/50]  loss=0.0001  val_mae=11.33  val_rmse=17.97  val_r2=0.9955  (37s)
+  [ 5/50]  loss=0.0001  val_mae=11.88  val_rmse=18.83  val_r2=0.9951  (36s)
+  [ 6/50]  loss=0.0001  val_mae=10.62  val_rmse=17.23  val_r2=0.9959  (37s)
+  [ 7/50]  loss=0.0001  val_mae=9.96  val_rmse=15.81  val_r2=0.9965  (37s)
+  [ 8/50]  loss=0.0001  val_mae=8.74  val_rmse=15.20  val_r2=0.9968  (37s)
+  [ 9/50]  loss=0.0001  val_mae=9.67  val_rmse=16.40  val_r2=0.9963  (36s)
+  [10/50]  loss=0.0001  val_mae=8.36  val_rmse=14.39  val_r2=0.9971  (29s)
+  [11/50]  loss=0.0001  val_mae=9.42  val_rmse=15.90  val_r2=0.9965  (29s)
+  [12/50]  loss=0.0001  val_mae=10.48  val_rmse=17.31  val_r2=0.9958  (29s)
+  [13/50]  loss=0.0001  val_mae=9.69  val_rmse=15.68  val_r2=0.9966  (28s)
+  [14/50]  loss=0.0001  val_mae=13.25  val_rmse=20.49  val_r2=0.9941  (28s)
+  [15/50]  loss=0.0001  val_mae=7.05  val_rmse=12.67  val_r2=0.9978  (29s)
+  [16/50]  loss=0.0001  val_mae=9.76  val_rmse=16.09  val_r2=0.9964  (28s)
+  [17/50]  loss=0.0001  val_mae=7.58  val_rmse=13.68  val_r2=0.9974  (28s)
+  [18/50]  loss=0.0000  val_mae=7.79  val_rmse=13.96  val_r2=0.9973  (28s)
+  [19/50]  loss=0.0001  val_mae=6.94  val_rmse=12.81  val_r2=0.9977  (28s)
+  [20/50]  loss=0.0000  val_mae=12.22  val_rmse=19.80  val_r2=0.9945  (28s)
+Early stopping triggered at epoch 20
+
+  TEST  mae=6.57  rmse=11.39  r2=0.9983
+
+────────────────────────────────────────────────────────────
+resnet50  type=rectangular  size=320×320
+────────────────────────────────────────────────────────────
+Trainable parameters: 23,510,081
+  [ 1/50]  loss=0.0015  val_mae=19.45  val_rmse=28.95  val_r2=0.9883  (38s)
+  [ 2/50]  loss=0.0002  val_mae=15.47  val_rmse=25.31  val_r2=0.9911  (38s)
+  [ 3/50]  loss=0.0002  val_mae=23.26  val_rmse=34.06  val_r2=0.9838  (38s)
+  [ 4/50]  loss=0.0002  val_mae=16.06  val_rmse=23.92  val_r2=0.9920  (38s)
+  [ 5/50]  loss=0.0001  val_mae=9.23  val_rmse=15.64  val_r2=0.9966  (38s)
+  [ 6/50]  loss=0.0001  val_mae=10.32  val_rmse=16.51  val_r2=0.9962  (38s)
+  [ 7/50]  loss=0.0001  val_mae=10.03  val_rmse=16.19  val_r2=0.9963  (38s)
+  [ 8/50]  loss=0.0001  val_mae=8.01  val_rmse=13.87  val_r2=0.9973  (38s)
+  [ 9/50]  loss=0.0001  val_mae=9.22  val_rmse=14.98  val_r2=0.9969  (38s)
+  [10/50]  loss=0.0001  val_mae=8.38  val_rmse=14.12  val_r2=0.9972  (38s)
+  [11/50]  loss=0.0001  val_mae=9.59  val_rmse=15.56  val_r2=0.9966  (38s)
+  [12/50]  loss=0.0001  val_mae=7.48  val_rmse=12.76  val_r2=0.9977  (38s)
+  [13/50]  loss=0.0001  val_mae=7.98  val_rmse=13.48  val_r2=0.9975  (38s)
+  [14/50]  loss=0.0001  val_mae=8.61  val_rmse=14.29  val_r2=0.9972  (38s)
+  [15/50]  loss=0.0001  val_mae=9.88  val_rmse=16.19  val_r2=0.9963  (38s)
+  [16/50]  loss=0.0001  val_mae=10.80  val_rmse=17.19  val_r2=0.9959  (38s)
+  [17/50]  loss=0.0001  val_mae=7.80  val_rmse=13.53  val_r2=0.9974  (38s)
+Early stopping triggered at epoch 17
+
+  TEST  mae=7.07  rmse=11.98  r2=0.9981
+
+======================================================================
+RESULTS SUMMARY  (sorted by test RMSE)
+======================================================================
+    arch    img_type  img_size  test_mae  test_rmse  test_r2
+resnet50 rectangular       224     4.692      9.847    0.999
+resnet50    original       224     6.145     11.306    0.998
+resnet50 rectangular       256     6.570     11.393    0.998
+resnet50 rectangular       320     7.068     11.980    0.998
+resnet50    original       256     6.418     12.217    0.998
+resnet50    original       320     7.388     12.585    0.998
+
+======================================================================
+ΔRMSE = RMSE(rectangular) − RMSE(original)  [negative = rect is better]
+======================================================================
+img_type           original  rectangular  delta
+arch     img_size
+resnet50 224         11.306        9.847 -1.459
+         256         12.217       11.393 -0.825
+         320         12.585       11.980 -0.606
+
+All done. Results in resnet50

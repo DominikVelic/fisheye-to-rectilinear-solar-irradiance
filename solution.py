@@ -329,8 +329,7 @@ def run_experiment(
     model.load_state_dict(best_state)
     test_m = evaluate(model, test_loader)
 
-    print(f"\n  TEST  mae={test_m['mae']:.2f}  rmse={
-          test_m['rmse']:.2f}  r2={test_m['r2']:.4f}")
+    print(f"\n  TEST  mae={test_m['mae']:.2f}  rmse={test_m['rmse']:.2f}  r2={test_m['r2']:.4f}")
 
     # Free GPU memory before next experiment
     del model, optimizer, scaler
