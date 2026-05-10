@@ -416,7 +416,7 @@ def main() -> None:
         for img_type in type_list:
             for img_size in size_list:
                 r = run_experiment(arch, img_type, img_size,
-                                   num_epochs, subset_train, patience, timestamp, batch_size)
+                                   num_epochs, subset_train, patience, timestamp, batch_size, lr)
                 results.append(r)
 
     # Save CSV summary
